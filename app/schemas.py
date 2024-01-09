@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 # pydantic model, structure for incoming HTTP requests/resposne
@@ -20,4 +20,15 @@ class PostCreate(PostBase):
 
 class PostResponse(PostBase):
     id: int
+    created_at: datetime
+
+
+class User(BaseModel):
+    id: int
+    email: EmailStr
+
+class UserCreate(User):
+    password: str
+
+class UserCreateResponse(User):
     created_at: datetime
