@@ -23,12 +23,12 @@ class PostResponse(PostBase):
     created_at: datetime
 
 
-class User(BaseModel):
+class UserInfo(BaseModel):
     id: int
     email: EmailStr
 
-class UserCreate(User):
+class UserCreate(UserInfo):
     password: str
 
-class UserCreateResponse(User):
+class UserCreateResponse(UserInfo):
     created_at: datetime
