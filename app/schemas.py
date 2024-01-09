@@ -7,7 +7,7 @@ from datetime import datetime
 # this way client cannot pass whatever they want to pass in HTTP req
 
 
-# pydantic models for HTTP requests
+# pydantic models for incoming HTTP requests
 class PostBase(BaseModel):
     title: str
     content: str
@@ -16,8 +16,11 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     pass
 
-# pydantic models for HTTP response
+class Login(BaseModel):
+    email: EmailStr
+    password: str
 
+# pydantic models for HTTP response
 class PostResponse(PostBase):
     id: int
     created_at: datetime
@@ -27,8 +30,11 @@ class UserInfo(BaseModel):
     id: int
     email: EmailStr
 
-class UserCreate(UserInfo):
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str
 
 class UserCreateResponse(UserInfo):
     created_at: datetime
+
+
