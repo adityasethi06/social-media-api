@@ -25,6 +25,7 @@ class Login(BaseModel):
 class PostResponse(PostBase):
     id: int
     created_at: datetime
+    user_id: int
 
 
 class UserInfo(BaseModel):

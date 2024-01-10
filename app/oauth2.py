@@ -14,7 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 # secret should never be published to SVC. this is just an app for learning.
 SECRET_KEY = "RRER67878IRE6767FOIERORERENVCVMSDCSDCSDC4323223234E234KJNFFYT6Y756JNY56908VN0332323292"
 ALGORITHM = 'HS256'
-ACCESS_TOKEN_DURATION = 5
+ACCESS_TOKEN_DURATION = 60
 
 def create_access_token(data: dict):
     to_encode = data.copy()
