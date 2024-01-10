@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from ..schemas import PostBase, PostCreate, PostResponse
 from ..database import get_db
 from ..models import Post
+from ..oauth2 import get_current_user
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
 
@@ -13,7 +14,7 @@ def get_posts(db: Session = Depends(get_db)):
     return posts
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
-def create_posts(post: PostCreate, db: Session = Depends(get_db)):
+def create_posts(post: PostCreate, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     # using sqlalchemy orm
     new_post = Post(title=post.title, content=post.content, published=post.published)
     db.add(new_post)
@@ -22,7 +23,7 @@ def create_posts(post: PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 @router.get("/{id}", response_model=PostResponse)
-def get_post(id: int, response: Response, db: Session = Depends(get_db)): # by adding type int, fastapi will take care of typcasting path param to int or throw error
+def get_post(id: int, response: Response, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)): # by adding type int, fastapi will take care of typcasting path param to int or throw error
     post = db.query(Post).filter_by(id=id).first()
     if post:
         return post
@@ -31,7 +32,7 @@ def get_post(id: int, response: Response, db: Session = Depends(get_db)): # by a
                             detail=f"No post found with id: {id}")
     
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
-def delete_post(id: int, db: Session = Depends(get_db)):
+def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     deleted_post = db.query(Post).filter_by(id=id).first()
     if not deleted_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -41,7 +42,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     return f"post with id: {id} deleted"
 
 @router.put("/{id}", response_model=PostResponse)
-def update_post(id: int, post: PostBase, respone: Response, db: Session = Depends(get_db)):
+def update_post(id: int, post: PostBase, respone: Response, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     update_post_candidate = db.query(Post).filter_by(id=id).first()
     if not update_post_candidate:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

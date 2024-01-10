@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 # pydantic model, structure for incoming HTTP requests/resposne
 # fastapi used this model to inetrnally validates incoming req.
@@ -37,4 +38,10 @@ class UserCreate(BaseModel):
 class UserCreateResponse(UserInfo):
     created_at: datetime
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
+class TokenData(BaseModel):
+    id: Optional[int] = None
+    expiry: int

@@ -4,6 +4,7 @@ from ..models import User
 from ..database import get_db
 from sqlalchemy.orm import Session
 from app.utils import hash_pwd
+from ..oauth2 import get_current_user
 
 router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -18,7 +19,7 @@ def create_user(user: UserCreate,  db: Session = Depends(get_db)):
     return new_user
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserInfo)
-def get_user(id: int, db: Session = Depends(get_db)):
+def get_user(id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     user = db.query(User).filter_by(id=id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
