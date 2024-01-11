@@ -33,11 +33,15 @@ def get_post(id: int, response: Response, db: Session = Depends(get_db), logged_
     
 @router.delete("/{id}", status_code=status.HTTP_200_OK)
 def delete_post(id: int, db: Session = Depends(get_db), logged_user_id: int = Depends(get_current_user)):
-    deleted_post = db.query(Post).filter_by(id=id).first()
-    if not deleted_post:
+    delete_post = db.query(Post).filter_by(id=id).first()
+    if not delete_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} not there")
-    db.delete(deleted_post)
+    
+    if delete_post.user_id != logged_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=f"Not authorized to delete. Can only delete your own post.")
+    db.delete(delete_post)
     db.commit()
     return f"post with id: {id} deleted"
 
@@ -47,7 +51,9 @@ def update_post(id: int, post: PostBase, respone: Response, db: Session = Depend
     if not update_post_candidate:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} not there")    
-        
+    if update_post_candidate.user_id != logged_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=f"Not authorized to delete. Can only update your own post.")   
     update_post_data = post.model_dump()
     for key, val in update_post_data.items():
         setattr(update_post_candidate, key, val) if val else None
