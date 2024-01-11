@@ -15,6 +15,8 @@ class Post(Base):
     published = Column(Boolean, server_default='True', nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
+    # when post info is returned sqlalchemy will automaticaly fetch user info also from user table because
+    # of the relationship defined below
     owner = relationship("User")
 
 class User(Base):
