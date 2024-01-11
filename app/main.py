@@ -1,8 +1,7 @@
+from .config import base_config
 from fastapi import FastAPI
-from .database import engine, get_db
+from .database import engine
 from . import models
-from typing import List
-from .utils import hash_pwd
 from .routers import post, user, auth
 
 models.Base.metadata.create_all(bind=engine)

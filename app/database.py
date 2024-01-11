@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from .config import base_config
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:root@localhost/socialmedia"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{base_config.database_user}:{base_config.database_pwd}@{base_config.database_url}:{base_config.database_port}/{base_config.database_name}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL

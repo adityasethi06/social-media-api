@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from .schemas import TokenData
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from .config import base_config
 import calendar
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
@@ -12,8 +13,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 #Expiration time
 
 # secret should never be published to SVC. this is just an app for learning.
-SECRET_KEY = "RRER67878IRE6767FOIERORERENVCVMSDCSDCSDC4323223234E234KJNFFYT6Y756JNY56908VN0332323292"
-ALGORITHM = 'HS256'
+SECRET_KEY = base_config.secret_key
+ALGORITHM = base_config.jwt_algorithm
 ACCESS_TOKEN_DURATION = 60
 
 def create_access_token(data: dict):
