@@ -16,7 +16,7 @@ def get_posts(db: Session = Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
 def create_posts(post: PostCreate, db: Session = Depends(get_db), logged_user_id: int = Depends(get_current_user)):
     # using sqlalchemy orm
-    new_post = Post(title=post.title, content=post.content, published=post.published, user_id=logged_user_id)
+    new_post = Post(title=post.title, content=post.content, published=post.published, owner_id=logged_user_id)
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -38,7 +38,7 @@ def delete_post(id: int, db: Session = Depends(get_db), logged_user_id: int = De
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} not there")
     
-    if delete_post.user_id != logged_user_id:
+    if delete_post.owner_id != logged_user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f"Not authorized to delete. Can only delete your own post.")
     db.delete(delete_post)
@@ -51,7 +51,7 @@ def update_post(id: int, post: PostBase, respone: Response, db: Session = Depend
     if not update_post_candidate:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} not there")    
-    if update_post_candidate.user_id != logged_user_id:
+    if update_post_candidate.owner_id != logged_user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f"Not authorized to delete. Can only update your own post.")   
     update_post_data = post.model_dump()

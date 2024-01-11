@@ -45,6 +45,6 @@ class TokenData(BaseModel):
 class PostResponse(PostBase):
     id: int
     created_at: datetime
-    user_id: int
-    user: UserCreateResponse
+    owner_id: int
+    owner: UserCreateResponse
 
