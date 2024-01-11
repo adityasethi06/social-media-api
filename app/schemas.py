@@ -21,6 +21,11 @@ class Login(BaseModel):
     email: EmailStr
     password: str
 
+
+class VoteData(BaseModel):
+    post_id: int
+    vote_dir: int 
+
 # pydantic models for HTTP response
 
 class UserInfo(BaseModel):
