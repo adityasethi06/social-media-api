@@ -22,11 +22,6 @@ class Login(BaseModel):
     password: str
 
 # pydantic models for HTTP response
-class PostResponse(PostBase):
-    id: int
-    created_at: datetime
-    user_id: int
-
 
 class UserInfo(BaseModel):
     id: int
@@ -46,3 +41,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
     expiry: int
+
+class PostResponse(PostBase):
+    id: int
+    created_at: datetime
+    user_id: int
+    user: UserCreateResponse
+
