@@ -1,23 +1,27 @@
 from typing import List, Optional
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from ..schemas import PostBase, PostCreate, PostResponse
+from sqlalchemy import func
+from ..schemas import PostBase, PostCreate, PostResponse, PostVote
 from ..database import get_db
-from ..models import Post
+from ..models import Post, Vote
 from ..oauth2 import get_current_user
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
 
-@router.get("/", response_model=List[PostResponse])
+# @router.get("/", response_model=List[PostResponse])
+@router.get("/", response_model=List[PostVote])
 def get_posts(db: Session = Depends(get_db), limit: Optional[int|None] = None, 
               offset: Optional[int|None] = None, title: Optional[str|None] = ""):
-    query = db.query(Post)\
-              .filter(Post.title.contains(title))\
-              .order_by(Post.created_at)\
-              .limit(limit=limit)\
-              .offset(offset=offset)
-    posts = query.all()
-    return posts
+    
+    posts_with_votes_query = db.query(Post, func.count(Vote.post_id).label("votes"))\
+                            .join(Vote, Post.id == Vote.post_id, isouter=True).group_by(Post.id)\
+                            .filter(Post.title.contains(title))\
+                            .order_by(Post.created_at)\
+                            .limit(limit=limit)\
+                            .offset(offset=offset)
+    posts_with_votes = posts_with_votes_query.all()
+    return posts_with_votes
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=PostResponse)
 def create_posts(post: PostCreate, db: Session = Depends(get_db), logged_user_id: int = Depends(get_current_user)):

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import datetime
 from typing import Optional
 
@@ -52,4 +52,9 @@ class PostResponse(PostBase):
     created_at: datetime
     owner_id: int
     owner: UserCreateResponse
+
+# below pydantic model works in case of joins
+class PostVote(BaseModel):
+    Post: PostResponse
+    votes: int
 
