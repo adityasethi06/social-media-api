@@ -32,9 +32,11 @@ def create_posts(post: PostCreate, db: Session = Depends(get_db), logged_user_id
     db.refresh(new_post)
     return new_post
 
-@router.get("/{id}", response_model=PostResponse)
+@router.get("/{id}", response_model=PostVote)
 def get_post(id: int, response: Response, db: Session = Depends(get_db), logged_user_id: int = Depends(get_current_user)): # by adding type int, fastapi will take care of typcasting path param to int or throw error
-    post = db.query(Post).filter_by(id=id).first()
+    post = db.query(Post, func.count(Vote.post_id).label("votes"))\
+                    .join(Vote, Post.id == Vote.post_id, isouter=True).group_by(Post.id)\
+                    .filter(Post.id==id).first()
     if post:
         return post
     else:
