@@ -1,0 +1,31 @@
+
+The Uncomplicated Firewall (UFW) is a command-line firewall abstraction layer 
+that automatically uses either iptables or nftables 
+as a back-end firewall. UFW is a tool that minimizes the effort of 
+setting up a firewall by starting with an optimal default configuration.
+
+check firewall status
+
+    sudo ufw status
+    Status: inactive
+
+allow http, https, ssh
+    sudo ufw allow http https
+    sudo ufw allow http http
+    sudo ufw allow http ssh
+
+enable firewall
+    sudo ufw enable
+
+Check status again
+    sudo ufw status
+    Status: active
+
+    To                         Action      From
+    --                         ------      ----
+    80/tcp                     ALLOW       Anywhere                  
+    443                        ALLOW       Anywhere                  
+    22/tcp                     ALLOW       Anywhere                  
+    80/tcp (v6)                ALLOW       Anywhere (v6)             
+    443 (v6)                   ALLOW       Anywhere (v6)             
+    22/tcp (v6)                ALLOW       Anywhere (v6)             
