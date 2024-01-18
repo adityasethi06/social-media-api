@@ -1,0 +1,18 @@
+# This is a systemd service/unit, describes unit in linux which would run as a user service 
+# can enable this unit 'systemctl enable <service name>', then it'll run on machine start automatically
+# 'systemctl start|stop|status <service name>', can be used to start, stop and check status
+
+[Unit]
+Description=social media api
+After=network.tagret
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=adi
+Group=adi
+WorkingDirectory=/home/adi/socialmedia/
+Environment="PATH=/home/adi/socialmedia/venv/bin"
+EnvironmentFile=/home/adi/.env
+ExecStart=/home/adi/socialmedia/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
