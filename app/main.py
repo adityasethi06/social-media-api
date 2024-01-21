@@ -18,7 +18,8 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-app.include_router(auth.router)
-app.include_router(post.router)
-app.include_router(user.router)
-app.include_router(vote.router)
+API_PREFIX = '/api/v1'
+app.include_router(auth.router, prefix=API_PREFIX)
+app.include_router(post.router, prefix=API_PREFIX)
+app.include_router(user.router, prefix=API_PREFIX)
+app.include_router(vote.router, prefix=API_PREFIX)
